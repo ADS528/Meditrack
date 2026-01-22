@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { getMedicines, getHistory, logDose } from '../services/api';
 import { Medicine, DoseLog } from '../types';
-import { Plus, Check, Clock, AlertTriangle } from 'lucide-react';
+import { Plus, Check, Clock, AlertTriangle, Bell } from 'lucide-react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 
 interface DashboardProps {
@@ -17,10 +17,56 @@ export const Dashboard: React.FC<DashboardProps> = ({ onAddMedicine }) => {
   }[]>([]);
   const [stats, setStats] = useState({ completed: 0, missed: 0, adherence: 0 });
   const [lateWarning, setLateWarning] = useState<string | null>(null);
+  const [notificationPermission, setNotificationPermission] = useState(Notification.permission);
+  const notifiedRef = useRef<Set<string>>(new Set());
 
   useEffect(() => {
     loadDashboardData();
   }, []);
+
+  // Check for notifications every 10 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+        const now = new Date();
+        const hours = String(now.getHours()).padStart(2, '0');
+        const mins = String(now.getMinutes()).padStart(2, '0');
+        const currentTime = `${hours}:${mins}`;
+
+        todaysDoses.forEach(dose => {
+            if (dose.status === 'pending' && dose.time === currentTime) {
+                const key = `${dose.medicine.id}-${currentTime}`;
+                // Prevent duplicate notifications for the same minute
+                if (!notifiedRef.current.has(key)) {
+                    if (Notification.permission === 'granted') {
+                        new Notification(`Time to take ${dose.medicine.name}`, {
+                            body: `It is ${currentTime}. Dosage: ${dose.medicine.dosage}`,
+                            icon: '/vite.svg'
+                        });
+                        notifiedRef.current.add(key);
+                    }
+                }
+            }
+        });
+        
+        // Optional: Trigger a data refresh to update 'Missed' statuses visually if time passes
+        if (now.getSeconds() === 0) {
+            loadDashboardData();
+        }
+
+    }, 5000); 
+
+    return () => clearInterval(interval);
+  }, [todaysDoses]);
+
+  const requestNotificationPermission = async () => {
+    const permission = await Notification.requestPermission();
+    setNotificationPermission(permission);
+    if (permission === 'granted') {
+        new Notification("Notifications Enabled", {
+            body: "MediTrack will now remind you when it's time to take your pills!"
+        });
+    }
+  };
 
   const loadDashboardData = async () => {
     const meds = await getMedicines();
@@ -122,12 +168,23 @@ export const Dashboard: React.FC<DashboardProps> = ({ onAddMedicine }) => {
         <div className="md:col-span-2 bg-white rounded-xl shadow p-6">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-bold text-gray-800">Today's Overview</h2>
-            <button 
-              onClick={onAddMedicine}
-              className="flex items-center text-sm bg-blue-600 text-white px-3 py-2 rounded-lg hover:bg-blue-700 transition"
-            >
-              <Plus className="w-4 h-4 mr-1" /> Add Medicine
-            </button>
+            <div className="flex space-x-2">
+                {notificationPermission !== 'granted' && (
+                    <button
+                        onClick={requestNotificationPermission}
+                        className="flex items-center text-sm bg-yellow-100 text-yellow-700 px-3 py-2 rounded-lg hover:bg-yellow-200 transition"
+                        title="Enable Notifications"
+                    >
+                        <Bell className="w-4 h-4 mr-1" /> Enable Alerts
+                    </button>
+                )}
+                <button 
+                onClick={onAddMedicine}
+                className="flex items-center text-sm bg-blue-600 text-white px-3 py-2 rounded-lg hover:bg-blue-700 transition"
+                >
+                <Plus className="w-4 h-4 mr-1" /> Add Medicine
+                </button>
+            </div>
           </div>
           
           <div className="grid grid-cols-3 gap-4 text-center">
