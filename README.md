@@ -1,9 +1,9 @@
 
-# MediTrack – Medicine Reminder System 💊
+# MediTrack – Medicine Reminder System 
 
 MediTrack is a privacy-first, offline-capable digital health companion designed to help users manage their medication schedules, track adherence, and organize doctor appointments. Built with a focus on simplicity and performance, it demonstrates a clean, responsive UI with robust client-side logic.
 
-## 🚀 Key Features
+## Key Features
 
 *   **Smart Dashboard**: Instantly view today's medication schedule. The system automatically filters out medicines that haven't started or have ended.
 *   **Adherence Analytics**: Visual Pie Chart showing "Taken" vs "Missed" stats for the current day to motivate users.
@@ -24,7 +24,7 @@ MediTrack is a privacy-first, offline-capable digital health companion designed 
 *   **Icons**: Lucide React
 *   **State/Storage**: LocalStorage with a Service Facade Pattern
 
-## 📦 Installation & Run
+## Installation & Run
 
 1.  **Clone the repository**
     ```bash
@@ -45,7 +45,7 @@ MediTrack is a privacy-first, offline-capable digital health companion designed 
 4.  **View**
     Open `http://localhost:5173` in your browser.
 
-## 📂 Project Structure
+##  Project Structure
 
 ```
 src/
@@ -57,7 +57,7 @@ src/
 └── index.tsx         # Entry point
 ```
 
-## 🧠 Technical Highlights
+##  Technical Highlights
 
 ### 1. The "Today" Filter Logic
 The dashboard doesn't just dump all data. It uses a specific algorithm in `Dashboard.tsx` to:
