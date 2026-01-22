@@ -14,7 +14,7 @@ MediTrack is a privacy-first, offline-capable digital health companion designed 
 *   **Privacy-Focused**: All data is stored locally on the device (LocalStorage). No sensitive health data leaves your browser.
 *   **Offline Capable**: Zero-latency interactions and full functionality without an internet connection.
 
-## 🛠️ Tech Stack
+##  Tech Stack
 
 *   **Frontend**: React 18
 *   **Language**: TypeScript (Strict typing for medical data reliability)
@@ -73,7 +73,7 @@ We avoided writing `localStorage.getItem` directly in our React components. Inst
 ### 3. Behavioral Heuristics
 The app includes a simple habit-tracking algorithm. If it detects that a user consistently marks "Taken" more than 60 minutes after the scheduled time, it triggers a "Late Warning" UI element to nudge the user toward better habits.
 
-## 🔮 Future Roadmap
+## Future Roadmap
 
 *   **Cloud Sync**: Optional account upgrading to sync data across devices.
 *   **Drug Interaction API**: Integration with OpenFDA to warn users if two meds conflict.
