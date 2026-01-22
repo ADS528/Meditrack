@@ -1,0 +1,5 @@
+{
+  "name": "MediTrack",
+  "description": "A simple medicine reminder system for tracking doses, appointments, and adherence stats.",
+  "requestFramePermissions": []
+}
